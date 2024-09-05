@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from PIL import Image
 import stone
 import io
+import rembg  # For background removal (experimental)
 
 app = Flask(__name__)
 
@@ -88,20 +89,28 @@ def process_image():
     image_type = 'color'
     other_args = []
 
+    # Open the image 
     image = Image.open(io.BytesIO(file.read()))
+
+    # Remove background (detects subject then remove background)
+    image_np = rembg.remove(image)  # Removes the background
+    image = Image.fromarray(image_np)  # Convert back to PIL Image
+
+    # Save the image to a temporary path
     image_path = "temp_image.png"
     image.save(image_path)
 
+    # Process the image with the stone library
     result = stone.process(image_path, image_type, return_report_image=True)
 
+    # Extract the results
     dominant_colors = result['faces'][0]['dominant_colors']
     skin_tone = result['faces'][0]['skin_tone']
     accuracy = result['faces'][0]['accuracy']
 
-    # Determine the season category
     season_category = categorize_skin_tone(skin_tone)
 
-    # Get the color palette for the determined season category
+   
     color_palette = get_color_palette(season_category)
 
     result_json = {
