@@ -6,10 +6,11 @@ import rembg  # For background removal (experimental)
 from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
-
+import os
 app = Flask(__name__)
 
-# List to store products
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 products = []
 
 @app.route('/')
@@ -172,43 +173,41 @@ def process_image():
 @app.route('/submit_product', methods=['POST'])
 def submit_product():
     try:
+        # Get form data
         product_name = request.form.get('Name')
+        manufacturer = request.form.get('Manufacturer')
+        release_date = request.form.get('Day')  # New field: Date of product release
         product_color = request.form.get('selectedColor')
+        description = request.form.get('Description')  # New field: Product description
+        shop_name = request.form.get('ShopName')  # New field: Shop name
+        cost = request.form.get('Cost')  # New field: Product cost
+        product_type = request.form.get('Product')  # New field: Type of product
 
-        # Simulate generating a color palette based on the product's skin tone
-        if 'season_category' in request.form:
-            season_category = request.form.get('season_category')
-            color_palette = get_color_palette(season_category)
+        # Save the image
+        image_file = request.files.get('image')
+        image_path = None
+        if image_file:
+            image_path = os.path.join(UPLOAD_FOLDER, image_file.filename)
+            image_file.save(image_path)
 
-            # Check if the product's color matches the recommended color palette
-            match_status = does_color_match(product_color, color_palette, threshold=10)
-            
-            # Store product in the list with match status
-            products.append({
-                "name": product_name,
-                "color": product_color,
-                "season_category": season_category,
-                "matches_palette": match_status
-            })
+        # Store product details
+        products.append({
+            "name": product_name,
+            "manufacturer": manufacturer,
+            "release_date": release_date,
+            "color": product_color,
+            "description": description,
+            "shop_name": shop_name,
+            "cost": cost,
+            "product_type": product_type,
+            "image_path": image_path
+        })
 
-            if match_status:
-                response = {
-                    "status": "success",
-                    "message": f"Product '{product_name}' matches the recommended color palette for {season_category}.",
-                    "recommended_palette": color_palette
-                }
-            else:
-                response = {
-                    "status": "failure",
-                    "message": f"Product '{product_name}' does not match the recommended color palette for {season_category}.",
-                    "recommended_palette": color_palette
-                }
-        else:
-            response = {
-                "status": "failure",
-                "message": "No season category provided."
-            }
-        
+        response = {
+            "success": True, 
+            "message": f"Product '{product_name}' uploaded successfully.",
+        }
+
         return jsonify(response)
 
     except Exception as e:

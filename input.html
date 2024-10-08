@@ -5,31 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <title>Admin Dashboard</title>
 </head>
 
 <body>
     <div class="container my-5">
-     
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
             <a class="navbar-brand" href="#">
                 <img src="Logo.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 50%;">
                 Product Input
             </a>
-          
         </nav>
-
-    
-        <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
 
         <form id="productForm" class="form-group" action="http://localhost:3009/submit_product" method="post" enctype="multipart/form-data">
             <div class="card p-4 shadow-sm">
@@ -37,18 +26,17 @@
                 <p class="text-center">Please fill out all fields!</p>
 
                 <div class="row">
-               
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="Name"><i class="fa fa-user"></i> Name of the Product</label>
                             <input type="text" class="form-control" name="Name" placeholder="Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="Contact"><i class="fa fa-house"></i> Manufacturer</label>
-                            <input type="text" class="form-control" name="Contact" placeholder="" required>
+                            <label for="Manufacturer"><i class="fa fa-house"></i> Manufacturer</label>
+                            <input type="text" class="form-control" name="Manufacturer" placeholder="" required>
                         </div>
                         <div class="form-group">
-                            <label for="Day"><i class="fa fa-calendar"></i>Date of Product Release</label>
+                            <label for="Day"><i class="fa fa-calendar"></i> Date of Product Release</label>
                             <input type="date" class="form-control" name="Day" required>
                         </div>
                         <div class="form-group mt-3">
@@ -56,38 +44,31 @@
                             <input type="color" class="form-control" id="colorPicker" name="selectedColor" value="#ff0000">
                         </div>
                         <div class="form-group">
-                            <label for="Note"><i class="fa fa-pen"></i> Product Description </label>
-                            <input type="text" class="form-control" name="Note" placeholder="Note" required>
+                            <label for="Description"><i class="fa fa-pen"></i> Product Description</label>
+                            <input type="text" class="form-control" name="Description" placeholder="Note" required>
                         </div>
-
                     </div>
 
-                 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="Email"><i class="fa fa-shop"></i> Shop Name</label>
-                            <input type="email" class="form-control" name="Email" placeholder="Email" required>
+                            <label for="ShopName"><i class="fa fa-shop"></i> Shop Name</label>
+                            <input type="text" class="form-control" name="ShopName" placeholder="Shop Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="Time"><i class="fa fa-coins"></i> Cost</label>
-                            <input type="number" class="form-control" name="Time" required placeholder="PHP">
+                            <label for="Cost"><i class="fa fa-coins"></i> Cost</label>
+                            <input type="number" class="form-control" name="Cost" required placeholder="PHP">
                         </div>
                         <div class="form-group">
-                            <label for="Occasion"><i class="fa fa-question"></i> Type of Product</label>
-                            <input type="text" class="form-control" name="Occasion" placeholder="" required>
+                            <label for="Product"><i class="fa fa-question"></i> Type of Product</label>
+                            <input type="text" class="form-control" name="Product" placeholder="" required>
                         </div>
-
                         <div class="form-group">
                             <label for="Image"><i class="fa fa-image"></i> Upload Image</label>
-                            <input type="file" class="form-control-file" id="imageInput" accept="image/*">
-                        </div>
-                        <div class="img-container">
-                            <img id="imagePreview" style="max-width: 100%;" />
+                            <input type="file" class="form-control-file" id="imageInput" name="image" accept="image/*" required>
                         </div>
                     </div>
                 </div>
 
-               
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary" id="submit-btn" name="save">UPLOAD PRODUCT</button>
                 </div>
@@ -95,57 +76,45 @@
         </form>
     </div>
 
+    <!-- Success Modal -->
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Success</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Your product has been successfully uploaded!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        let cropper;
-
-        imageInput.addEventListener('change', function(event) {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-                const file = files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1,
-                        viewMode: 2
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
         document.getElementById('productForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const formData = new FormData(this);
             
-       
-            if (cropper) {
-                cropper.getCroppedCanvas().toBlob(function(blob) {
-                    formData.append('croppedImage', blob, 'cropped.png');
-                
-                    submitForm(formData);
-                });
-            } else {
-                submitForm(formData); 
-            }
-        });
-
-        function submitForm(formData) {
             fetch('http://localhost:3009/submit_product', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
-            .then(data => alert('Product added successfully!'))
+            .then(data => {
+                if (data.success) { 
+                    $('#successModal').modal('show'); 
+                    alert(data.message || 'Error occurred');
+                }
+            })
             .catch(error => console.error('Error:', error));
-        }
+        });
     </script>
 </body>
 </html>
