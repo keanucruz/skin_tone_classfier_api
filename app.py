@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from PIL import Image
+from flask_cors import CORS
 import numpy as np
 import stone
 import rembg  # For background removal (experimental)
@@ -9,7 +10,7 @@ from colormath.color_diff import delta_e_cie2000
 import os
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = 'uploads'# para sa product image pala to paps (storage) not for the image processing ng face
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 products = []
 
