@@ -3,16 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Product Input</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <title>Admin Dashboard</title>
+    <style>
+        /* Custom styles for better appearance */
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container my-5">
+        <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
             <a class="navbar-brand" href="#">
                 <img src="Logo.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 50%;">
@@ -20,20 +30,22 @@
             </a>
         </nav>
 
-        <form id="productForm" class="form-group" action="http://localhost:3009/submit_product" method="post" enctype="multipart/form-data">
+        <!-- Product Submission Form -->
+        <form id="productForm" class="form-group" enctype="multipart/form-data">
             <div class="card p-4 shadow-sm">
                 <h3 class="card-title text-center">Product Endorsement</h3>
                 <p class="text-center">Please fill out all fields!</p>
 
                 <div class="row">
+                    <!-- Left Column -->
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="Name"><i class="fa fa-user"></i> Name of the Product</label>
                             <input type="text" class="form-control" name="Name" placeholder="Name" required>
                         </div>
                         <div class="form-group">
-                            <label for="Manufacturer"><i class="fa fa-house"></i> Manufacturer</label>
-                            <input type="text" class="form-control" name="Manufacturer" placeholder="" required>
+                            <label for="Manufacturer"><i class="fa fa-building"></i> Manufacturer</label>
+                            <input type="text" class="form-control" name="Manufacturer" placeholder="Manufacturer" required>
                         </div>
                         <div class="form-group">
                             <label for="Day"><i class="fa fa-calendar"></i> Date of Product Release</label>
@@ -45,13 +57,14 @@
                         </div>
                         <div class="form-group">
                             <label for="Description"><i class="fa fa-pen"></i> Product Description</label>
-                            <input type="text" class="form-control" name="Description" placeholder="Note" required>
+                            <input type="text" class="form-control" name="Description" placeholder="Description" required>
                         </div>
                     </div>
 
+                    <!-- Right Column -->
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="ShopName"><i class="fa fa-shop"></i> Shop Name</label>
+                            <label for="ShopName"><i class="fa fa-store"></i> Shop Name</label>
                             <input type="text" class="form-control" name="ShopName" placeholder="Shop Name" required>
                         </div>
                         <div class="form-group">
@@ -59,8 +72,8 @@
                             <input type="number" class="form-control" name="Cost" required placeholder="PHP">
                         </div>
                         <div class="form-group">
-                            <label for="Product"><i class="fa fa-question"></i> Type of Product</label>
-                            <input type="text" class="form-control" name="Product" placeholder="" required>
+                            <label for="Product"><i class="fa fa-question-circle"></i> Type of Product</label>
+                            <input type="text" class="form-control" name="Product" placeholder="Product Type" required>
                         </div>
                         <div class="form-group">
                             <label for="Image"><i class="fa fa-image"></i> Upload Image</label>
@@ -69,51 +82,40 @@
                     </div>
                 </div>
 
+                <!-- Submit Button -->
                 <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary" id="submit-btn" name="save">UPLOAD PRODUCT</button>
+                    <button type="submit" class="btn btn-primary" id="submit-btn" name="save">
+                        <i class="fa fa-upload"></i> UPLOAD PRODUCT
+                    </button>
                 </div>
             </div>
         </form>
     </div>
 
-
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="successModalLabel">Success</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Your product has been successfully uploaded!
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- JavaScript for Form Submission -->
     <script>
         document.getElementById('productForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault(); // Prevent default form submission
 
             const formData = new FormData(this);
-            
+
             fetch('http://localhost:3009/submit_product', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) { 
-                    $('#successModal').modal('show'); 
-                    alert(data.message || 'Error occurred');
+                if(data.success){
+                    alert(data.message);
+                    document.getElementById('productForm').reset(); // Reset the form
+                } else {
+                    alert('Error: ' + data.error);
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the product.');
+            });
         });
     </script>
 </body>

@@ -1,6 +1,7 @@
+from flask import Flask, request, jsonify, send_from_directory
 from flask import Flask, request, jsonify
-from PIL import Image
 from flask_cors import CORS
+from PIL import Image
 import numpy as np
 import stone
 import rembg  # For background removal (experimental)
@@ -8,15 +9,37 @@ from colormath.color_objects import sRGBColor, LabColor
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
 import os
-app = Flask(__name__)
+import json
 
-UPLOAD_FOLDER = 'uploads'# para sa product image pala to paps (storage) not for the image processing ng face
+app = Flask(__name__)
+CORS(app)  
+
+UPLOAD_FOLDER = 'uploads' 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-products = []
+
+PRODUCTS_FILE = 'products.json'  
+
+
+def load_products():
+    if os.path.exists(PRODUCTS_FILE):
+        with open(PRODUCTS_FILE, 'r') as file:
+            try:
+                return json.load(file)
+            except json.JSONDecodeError:
+                return []
+    return []
+
+# Save products to the JSON file
+def save_products():
+    with open(PRODUCTS_FILE, 'w') as file:
+        json.dump(products, file, indent=4)
+
+# Initialize the products list from the JSON file
+products = load_products()
 
 @app.route('/')
 def welcome():
-    return "Welcome"
+    return "Welcome to the Product Recommendation API!"
 
 def categorize_skin_tone(hex_color):
     hex_to_season = {
@@ -32,7 +55,7 @@ def categorize_skin_tone(hex_color):
         '#F3DAD6': 'Summer',
         '#FBF2F3': 'Spring'
     }
-    return hex_to_season.get(hex_color, "Unknown")
+    return hex_to_season.get(hex_color.lower(), "Unknown")
 
 def get_color_palette(season):
     palettes = {
@@ -130,7 +153,7 @@ def process_image():
             return jsonify({'error': 'No image file provided'}), 400
         
         file = request.files['image']
-        image = Image.open(file)
+        image = Image.open(file).convert('RGB')
 
         # Remove background
         image_np = np.array(image)
@@ -177,22 +200,26 @@ def submit_product():
         # Get form data
         product_name = request.form.get('Name')
         manufacturer = request.form.get('Manufacturer')
-        release_date = request.form.get('Day')  # New field: Date of product release
+        release_date = request.form.get('Day')  # Date of product release
         product_color = request.form.get('selectedColor')
-        description = request.form.get('Description')  # New field: Product description
-        shop_name = request.form.get('ShopName')  # New field: Shop name
-        cost = request.form.get('Cost')  # New field: Product cost
-        product_type = request.form.get('Product')  # New field: Type of product
+        description = request.form.get('Description')  # Product description
+        shop_name = request.form.get('ShopName')  # Shop name
+        cost = request.form.get('Cost')  # Product cost
+        product_type = request.form.get('Product')  # Type of product
 
         # Save the image
         image_file = request.files.get('image')
         image_path = None
         if image_file:
-            image_path = os.path.join(UPLOAD_FOLDER, image_file.filename)
+            # Ensure unique filenames to prevent overwriting
+            filename = image_file.filename
+            name, ext = os.path.splitext(filename)
+            unique_filename = f"{name}_{len(products)}{ext}"
+            image_path = os.path.join(UPLOAD_FOLDER, unique_filename)
             image_file.save(image_path)
 
         # Store product details
-        products.append({
+        product_data = {
             "name": product_name,
             "manufacturer": manufacturer,
             "release_date": release_date,
@@ -201,8 +228,12 @@ def submit_product():
             "shop_name": shop_name,
             "cost": cost,
             "product_type": product_type,
-            "image_path": image_path
-        })
+            "image_url": f"/{image_path}" if image_path else None  # You may need to serve images statically
+        }
+
+        # Append the product to the list and save it to the JSON file
+        products.append(product_data)
+        save_products()
 
         response = {
             "success": True, 
@@ -218,6 +249,11 @@ def submit_product():
 @app.route('/get_products', methods=['GET'])
 def get_products():
     return jsonify(products)
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(UPLOAD_FOLDER, filename)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=3009, debug=True)

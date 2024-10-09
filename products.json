@@ -1,0 +1,24 @@
+[
+    {
+        "name": "fdsa",
+        "manufacturer": "sad",
+        "release_date": "2024-10-15",
+        "color": "#946b6b",
+        "description": "asdasd",
+        "shop_name": "sdasd",
+        "cost": "12121",
+        "product_type": "dasd",
+        "image_url": "/uploads\\sql_0.jfif"
+    },
+    {
+        "name": "fdsa",
+        "manufacturer": "sad",
+        "release_date": "2024-10-10",
+        "color": "#b79f9f",
+        "description": "dasd",
+        "shop_name": "ivan",
+        "cost": "1212",
+        "product_type": "dasd",
+        "image_url": "/uploads\\unnamed_1.png"
+    }
+]
