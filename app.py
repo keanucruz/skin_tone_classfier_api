@@ -29,12 +29,12 @@ def load_products():
                 return []
     return []
 
-# Save products to the JSON file
+
 def save_products():
     with open(PRODUCTS_FILE, 'w') as file:
         json.dump(products, file, indent=4)
 
-# Initialize the products list from the JSON file
+
 products = load_products()
 
 @app.route('/')
@@ -197,28 +197,28 @@ def process_image():
 @app.route('/submit_product', methods=['POST'])
 def submit_product():
     try:
-        # Get form data
+   
         product_name = request.form.get('Name')
         manufacturer = request.form.get('Manufacturer')
-        release_date = request.form.get('Day')  # Date of product release
+        release_date = request.form.get('Day') 
         product_color = request.form.get('selectedColor')
-        description = request.form.get('Description')  # Product description
-        shop_name = request.form.get('ShopName')  # Shop name
-        cost = request.form.get('Cost')  # Product cost
-        product_type = request.form.get('Product')  # Type of product
+        description = request.form.get('Description') 
+        shop_name = request.form.get('ShopName') 
+        cost = request.form.get('Cost') 
+        product_type = request.form.get('Product')  
 
-        # Save the image
+      
         image_file = request.files.get('image')
         image_path = None
         if image_file:
-            # Ensure unique filenames to prevent overwriting
+           
             filename = image_file.filename
             name, ext = os.path.splitext(filename)
             unique_filename = f"{name}_{len(products)}{ext}"
             image_path = os.path.join(UPLOAD_FOLDER, unique_filename)
             image_file.save(image_path)
 
-        # Store product details
+    
         product_data = {
             "name": product_name,
             "manufacturer": manufacturer,
@@ -228,10 +228,10 @@ def submit_product():
             "shop_name": shop_name,
             "cost": cost,
             "product_type": product_type,
-            "image_url": f"/{image_path}" if image_path else None  # You may need to serve images statically
+            "image_url": f"/{image_path}" if image_path else None 
         }
 
-        # Append the product to the list and save it to the JSON file
+       
         products.append(product_data)
         save_products()
 

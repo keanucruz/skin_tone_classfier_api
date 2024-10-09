@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
-        /* Custom styles for better appearance */
+       
         body {
             background-color: #f8f9fa;
         }
@@ -22,7 +22,7 @@
 
 <body>
     <div class="container my-5">
-        <!-- Navbar -->
+      
         <nav class="navbar navbar-expand-lg navbar-light bg-light rounded">
             <a class="navbar-brand" href="#">
                 <img src="Logo.png" alt="Logo" style="width: 50px; height: 50px; border-radius: 50%;">
@@ -30,14 +30,14 @@
             </a>
         </nav>
 
-        <!-- Product Submission Form -->
+       
         <form id="productForm" class="form-group" enctype="multipart/form-data">
             <div class="card p-4 shadow-sm">
                 <h3 class="card-title text-center">Product Endorsement</h3>
                 <p class="text-center">Please fill out all fields!</p>
 
                 <div class="row">
-                    <!-- Left Column -->
+                   
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="Name"><i class="fa fa-user"></i> Name of the Product</label>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                    <!-- Right Column -->
+                    
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="ShopName"><i class="fa fa-store"></i> Shop Name</label>
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
+       
                 <div class="text-center mt-4">
                     <button type="submit" class="btn btn-primary" id="submit-btn" name="save">
                         <i class="fa fa-upload"></i> UPLOAD PRODUCT
@@ -92,7 +92,7 @@
         </form>
     </div>
 
-    <!-- JavaScript for Form Submission -->
+
     <script>
         document.getElementById('productForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
@@ -107,7 +107,7 @@
             .then(data => {
                 if(data.success){
                     alert(data.message);
-                    document.getElementById('productForm').reset(); // Reset the form
+                    document.getElementById('productForm').reset(); 
                 } else {
                     alert('Error: ' + data.error);
                 }
