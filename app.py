@@ -1,11 +1,16 @@
 import io
 import stone
+import os
 from PIL import Image
 from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
 from rembg import remove
 
 app = Flask(__name__)
 app.secret_key = 'diniyonapwedengmasisikungbatganitoginaganapankolangnanaturalsakainagapankonamautal'
+
+host = os.getenv('FLASK_HOST', '0.0.0.0')
+port = int(os.getenv('FLASK_PORT', 3009))
+debug = os.getenv('FLASK_DEBUG', 'True') == 'True'
 
 winter_products = [
     {"id": 1, "name": "Winter Coat", "type": "clothes", "color": "#000000", "brand": "North Face"},  # Black
@@ -227,4 +232,4 @@ def add_product():
     return redirect(url_for('home'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3009, debug=True)
+    app.run(host=host, port=port, debug=debug)
