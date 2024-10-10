@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Add a New Product</h1>
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/add_product" method="post" class="mt-4">
+            <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="type">Type:</label>
+                <select id="type" name="type" class="form-control" required>
+                    <option value="clothes">Clothes</option>
+                    <option value="bottoms">Bottoms</option>
+                    <option value="cosmetics">Cosmetics</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="brand">Brand:</label>
+                <input type="text" id="brand" name="brand" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <select id="color" name="color" class="form-control" required>
+                    <!-- Winter Colors -->
+                    <option value="#000000" style="background-color: #000000; color: #FFFFFF;">Black</option>
+                    <option value="#FFFFFF" style="background-color: #FFFFFF; color: #000000;">White</option>
+                    <option value="#006400" style="background-color: #006400; color: #FFFFFF;">Emerald Green</option>
+                    <option value="#4169E1" style="background-color: #4169E1; color: #FFFFFF;">Royal Blue</option>
+                    <option value="#4B0082" style="background-color: #4B0082; color: #FFFFFF;">Deep Purple</option>
+                    <option value="#FF0000" style="background-color: #FF0000; color: #FFFFFF;">True Red</option>
+                    <option value="#4682B4" style="background-color: #4682B4; color: #FFFFFF;">Cool Blue</option>
+                    <option value="#FF69B4" style="background-color: #FF69B4; color: #FFFFFF;">Hot Pink</option>
+                    <option value="#A9A9A9" style="background-color: #A9A9A9; color: #FFFFFF;">Icy Grey</option>
+                    <!-- Summer Colors -->
+                    <option value="#FFB6C1" style="background-color: #FFB6C1; color: #000000;">Soft Pink</option>
+                    <option value="#89CFF0" style="background-color: #89CFF0; color: #000000;">Baby Blue</option>
+                    <option value="#E6E6FA" style="background-color: #E6E6FA; color: #000000;">Lavender</option>
+                    <option value="#B0E0E6" style="background-color: #B0E0E6; color: #000000;">Powder Blue</option>
+                    <option value="#696969" style="background-color: #696969; color: #FFFFFF;">Dove Grey</option>
+                    <option value="#F5F5F5" style="background-color: #F5F5F5; color: #000000;">Soft White</option>
+                    <option value="#5F9EA0" style="background-color: #5F9EA0; color: #FFFFFF;">Muted Navy</option>
+                    <option value="#98FF98" style="background-color: #98FF98; color: #000000;">Mint</option>
+                    <option value="#FF007F" style="background-color: #FF007F; color: #FFFFFF;">Rose</option>
+                    <option value="#4682B4" style="background-color: #4682B4; color: #FFFFFF;">Soft Blue-Green</option>
+                    <!-- Autumn Colors -->
+                    <option value="#808000" style="background-color: #808000; color: #FFFFFF;">Olive Green</option>
+                    <option value="#CC5500" style="background-color: #CC5500; color: #FFFFFF;">Burnt Orange</option>
+                    <option value="#FFDB58" style="background-color: #FFDB58; color: #000000;">Mustard Yellow</option>
+                    <option value="#C19A6B" style="background-color: #C19A6B; color: #000000;">Camel</option>
+                    <option value="#F5F5DC" style="background-color: #F5F5DC; color: #000000;">Beige</option>
+                    <option value="#8B4513" style="background-color: #8B4513; color: #FFFFFF;">Rich Brown</option>
+                    <option value="#014421" style="background-color: #014421; color: #FFFFFF;">Deep Teal</option>
+                    <option value="#CB4154" style="background-color: #CB4154; color: #FFFFFF;">Brick Red</option>
+                    <option value="#228B22" style="background-color: #228B22; color: #FFFFFF;">Forest Green</option>
+                    <option value="#FFD700" style="background-color: #FFD700; color: #000000;">Gold</option>
+                    <option value="#CD7F32" style="background-color: #CD7F32; color: #FFFFFF;">Bronze</option>
+                    <!-- Spring Colors -->
+                    <option value="#FF7F50" style="background-color: #FF7F50; color: #FFFFFF;">Coral</option>
+                    <option value="#FFE5B4" style="background-color: #FFE5B4; color: #000000;">Peach</option>
+                    <option value="#FF4500" style="background-color: #FF4500; color: #FFFFFF;">Clear Red</option>
+                    <option value="#00FF00" style="background-color: #00FF00; color: #000000;">Bright Green</option>
+                    <option value="#40E0D0" style="background-color: #40E0D0; color: #000000;">Turquoise</option>
+                    <option value="#ADD8E6" style="background-color: #ADD8E6; color: #000000;">Light Warm Blue</option>
+                    <option value="#FFDAB9" style="background-color: #FFDAB9; color: #000000;">Peachy Pink</option>
+                    <option value="#FBCEB1" style="background-color: #FBCEB1; color: #000000;">Apricot</option>
+                    <option value="#C19A6B" style="background-color: #C19A6B; color: #000000;">Light Camel</option>
+                    <option value="#FFFFF0" style="background-color: #FFFFF0; color: #000000;">Ivory</option>
+                    <option value="#F5F5DC" style="background-color: #F5F5DC; color: #000000;">Warm Beige</option>
+                    <option value="#FFFACD" style="background-color: #FFFACD; color: #000000;">Butter Yellow</option>
+                    <option value="#C3CDE6" style="background-color: #C3CDE6; color: #000000;">Light Periwinkle</option>
+                    <option value="#7FFF00" style="background-color: #7FFF00; color: #000000;">Bright Warm Green</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Add Product</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
