@@ -162,10 +162,17 @@ def process_image():
     image = Image.open(io.BytesIO(file.read()))
     output_image = remove(image)
 
-    image_path = "temp_image.png"
-    output_image.save(image_path)
 
-    result = stone.process(image_path, image_type, return_report_image=True)
+    image_folder = os.path.join(app.root_path, 'images')
+
+
+    os.makedirs(image_folder, exist_ok=True)
+
+
+    processed_image_path = os.path.join(image_folder, "temp_image.png")
+    output_image.save(processed_image_path)
+
+    result = stone.process(processed_image_path, image_type, return_report_image=True)
 
     dominant_colors = result['faces'][0]['dominant_colors']
     skin_tone = result['faces'][0]['skin_tone']
